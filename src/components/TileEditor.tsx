@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Eye, EyeOff, Download, Grid } from "lucide-react";
+import { Eye, EyeOff, Download } from "lucide-react";
 import {
 	downloadTileSet,
 	downloadPlacedTiles,
