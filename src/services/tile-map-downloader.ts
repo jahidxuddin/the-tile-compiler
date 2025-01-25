@@ -4,7 +4,10 @@ const generateTileText = (placedTiles: (number | null)[], gridSize: number) => {
 	let tileText = "";
 
 	for (let i = 0; i < placedTiles.length; i++) {
-		const tile = placedTiles[i] !== null ? placedTiles[i] : -1;
+		let tile = placedTiles[i] !== null ? placedTiles[i] : -1;
+		if (tile !== -1 && tile !== null) {
+			tile++;
+		}
 		tileText += tile + " ";
 
 		if ((i + 1) % gridSize === 0) {

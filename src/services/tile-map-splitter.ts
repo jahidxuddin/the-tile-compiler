@@ -37,7 +37,6 @@ export async function splitTilemap(
 				tileHeight
 			);
 
-			// Prüfen, ob das Tile leer ist
 			const imageData = context.getImageData(0, 0, tileWidth, tileHeight);
 			const isEmpty = !imageData.data.some(
 				(value, index) => index % 4 !== 3 && value !== 0
