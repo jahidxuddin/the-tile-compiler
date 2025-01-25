@@ -25,7 +25,7 @@ export default function DragAndDropField({ setFiles }: Props) {
 		setIsDragging(false);
 		const droppedFiles = Array.from(e.dataTransfer.files);
 		setFiles((prevFiles) => [...prevFiles, ...droppedFiles]);
-	}, []);
+	}, [setFiles]);
 
 	const onClick = () => {
 		fileInputRef.current?.click();
