@@ -3,7 +3,10 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff, Download, Grid } from "lucide-react";
-import { handleDownload } from "@/services/tile-map-downloader";
+import {
+	downloadTileSet,
+	downloadPlacedTiles,
+} from "@/services/tile-map-downloader";
 import Image from "next/image";
 
 type Props = {
@@ -20,7 +23,7 @@ export default function TileEditor({ tiles }: Props) {
 	const [isPlacing, setIsPlacing] = useState(false);
 
 	const handleTilePlacement = (index: number) => {
-		if (selectedTile === null) return; 
+		if (selectedTile === null) return;
 		setPlacedTiles((prev) => {
 			const newPlacedTiles = [...prev];
 			newPlacedTiles[index] = selectedTile;
@@ -55,30 +58,24 @@ export default function TileEditor({ tiles }: Props) {
 	return (
 		<div className="flex h-screen w-full">
 			<div className="flex-1 p-4 overflow-auto">
-				<div className="mb-4 flex items-center gap-5">
-					<div className="flex items-center gap-2">
-						<Grid className="w-5 h-5" />
-						<input
-							type="number"
-							id="gridSize"
-							min="1"
-							max="32"
-							value={gridSize}
-							onChange={(e) =>
-								setGridSize(
-									Math.min(
-										32,
-										Math.max(
-											1,
-											Number.parseInt(e.target.value)
-										)
-									)
+				<div className="mb-4 flex items-center gap-3">
+					<input
+						type="number"
+						id="gridSize"
+						min="1"
+						max="32"
+						value={gridSize}
+						onChange={(e) =>
+							setGridSize(
+								Math.min(
+									32,
+									Math.max(1, Number.parseInt(e.target.value))
 								)
-							}
-							className="border rounded px-2 py-1"
-							aria-label="Grid Size"
-						/>
-					</div>
+							)
+						}
+						className="border rounded px-2 py-1"
+						aria-label="Grid Size"
+					/>
 					<Button
 						variant="outline"
 						onClick={() => setShowGrid(!showGrid)}
@@ -93,11 +90,21 @@ export default function TileEditor({ tiles }: Props) {
 					</Button>
 					<Button
 						variant="outline"
-						onClick={() => handleDownload(placedTiles, gridSize)}
+						onClick={() =>
+							downloadPlacedTiles(placedTiles, gridSize)
+						}
 						className="flex items-center px-2 py-1 text-sm"
 					>
 						<Download className="mr-1 w-4 h-4" />
-						Download
+						Download Tilemap
+					</Button>
+					<Button
+						variant="outline"
+						onClick={() => downloadTileSet(tiles)}
+						className="flex items-center px-2 py-1 text-sm"
+					>
+						<Download className="mr-1 w-4 h-4" />
+						Download Tiles
 					</Button>
 				</div>
 

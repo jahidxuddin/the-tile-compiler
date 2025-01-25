@@ -1,3 +1,5 @@
+import JSZip from "jszip";
+
 const generateTileText = (placedTiles: (number | null)[], gridSize: number) => {
 	let tileText = "";
 
@@ -9,7 +11,7 @@ const generateTileText = (placedTiles: (number | null)[], gridSize: number) => {
 			tileText += "\n";
 		}
 
-		if (i + 1 === gridSize**2) {
+		if (i + 1 === gridSize ** 2) {
 			break;
 		}
 	}
@@ -17,7 +19,10 @@ const generateTileText = (placedTiles: (number | null)[], gridSize: number) => {
 	return tileText;
 };
 
-const handleDownload = (placedTiles: (number | null)[], gridSize: number) => {
+const downloadPlacedTiles = (
+	placedTiles: (number | null)[],
+	gridSize: number
+) => {
 	const tileText = generateTileText(placedTiles, gridSize);
 	const blob = new Blob([tileText], { type: "text/plain" });
 	const url = URL.createObjectURL(blob);
@@ -28,4 +33,40 @@ const handleDownload = (placedTiles: (number | null)[], gridSize: number) => {
 	URL.revokeObjectURL(url);
 };
 
-export { handleDownload };
+const downloadTileSet = async (tileSet: Tile[]) => {
+	const zip = new JSZip();
+
+	await Promise.all(
+		tileSet.map(
+			(tile, index) =>
+				new Promise<void>((resolve, reject) => {
+					const dataURL = tile.image.toDataURL("image/png");
+
+					fetch(dataURL)
+						.then((response) => response.blob())
+						.then((blob) => {
+							zip.file(`tile_${index + 1}.png`, blob);
+							resolve();
+						})
+						.catch((error) => {
+							console.error(
+								"Error while converting tile to Blob:",
+								error
+							);
+							reject(error);
+						});
+				})
+		)
+	);
+
+	zip.generateAsync({ type: "blob" }).then((content) => {
+		const a = document.createElement("a");
+		const url = URL.createObjectURL(content);
+		a.href = url;
+		a.download = "tiles.zip";
+		a.click();
+		URL.revokeObjectURL(url);
+	});
+};
+
+export { downloadPlacedTiles, downloadTileSet };
