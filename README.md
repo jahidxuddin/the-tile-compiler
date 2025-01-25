@@ -1,1 +1,1 @@
-# the-tile-compiler
+# TheTileCompiler
